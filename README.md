@@ -1,5 +1,5 @@
 # test-sentiment_analysis
-*a simple test for sentimento analysis using gensim, pytorch, numpy...*
+*a simple test for sentiment analysis using gensim, pytorch, numpy...*
 
 I used [this dataset](https://www.kaggle.com/vdemario/teste-de-c-digo-nlp/notebook), it's is very small for good results but is interesting about overfitting
 
