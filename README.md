@@ -6,7 +6,10 @@ I used [this dataset](https://www.kaggle.com/vdemario/teste-de-c-digo-nlp/notebo
 This experiment is composed in 3 notebooks:
 
 * Convolutional Neural Network 2D :ok:
-E
 * Convolutional Neural Netword 1D :ok:
 * Recurrent Neural Network with GRU (Gated Recurrent Unit) :ok:
 * Convolutional Recurrent Neural Network with GRU :hammer_and_pick:
+
+![](models.png)
+
+*visualization by [netron](https://www.lutzroeder.com/ai/netron/)*
