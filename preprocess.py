@@ -28,9 +28,9 @@ def cleantext(path, lang="english"):
     return corpus, target, stopw
 
 def word2vec(corpus, size, sg, iterations):
-    skip_gram = gensim.models.Word2Vec(
+    model = gensim.models.Word2Vec(
         corpus, size=size sg=sg,
         iter=iterations,  min_count=1
         )
 
-    return skip_gram
+    return model
