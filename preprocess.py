@@ -4,7 +4,7 @@ import gensim
 from nltk.corpus import stopwords
 
 
-def cleantext(path, lang="english"):
+def cleantext(path, lang="english", savepath):
     corpus, target = [], []
 
     stopw = stopwords.words(lang)
@@ -27,10 +27,15 @@ def cleantext(path, lang="english"):
 
     return corpus, target, stopw
 
-def word2vec(corpus, size, sg, iterations):
+def word2vec(corpus, size, sg, iterations, path):
     model = gensim.models.Word2Vec(
         corpus, size=size sg=sg,
         iter=iterations,  min_count=1
         )
-
+        
+    try:
+        model.save_word2vec_format(path)
+    except expression as identifier:
+        print("error on save trained model")
+    
     return model
