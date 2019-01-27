@@ -24,4 +24,13 @@ def cleantext(path, lang="english"):
             i += 1
     assert len(corpus) == len(target),\
      f"corpus: {len(corpus)} | target: {len(target)}"
-    return corpus, target
+
+    return corpus, target, stopw
+
+def word2vec(corpus, size, sg, iterations):
+    skip_gram = gensim.models.Word2Vec(
+        corpus, size=size sg=sg,
+        iter=iterations,  min_count=1
+        )
+
+    return skip_gram
