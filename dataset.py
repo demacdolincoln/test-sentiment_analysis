@@ -28,6 +28,7 @@ class Data(Dataset):
     def __init__(self, data, target, model, m, n, stop_words, mtype):
         self.n = n
         self.m = m
+        self.mtype = mtype
         if mtype == "2d":
             self.data = torch.FloatTensor(
                 [make_matrix(i, model, m, n, stop_words, "2d") for i in data]
@@ -40,8 +41,10 @@ class Data(Dataset):
         self._len = len(target)
 
     def __getitem__(self, x):
-        return self.data[x], self.target[x]
+        if self.mtype == "2d":
+            return self.data[x].view(1, self.n, self.n), self.target[x]
+        elif self.mtype == "1d":
+            return self.data[x], self.target[x]
 
     def __len__(self):
-        return self._len
-    
+        return self._len  
