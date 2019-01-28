@@ -4,11 +4,11 @@ import gensim
 from nltk.corpus import stopwords
 
 
-def cleantext(path, lang="english", savepath):
+def cleantext(path, lang="english"):
     corpus, target = [], []
 
     stopw = stopwords.words(lang)
-    for file in glob(path):
+    for file in glob.glob(path):
         texts = open(file).read()
         i = 0
         for line in texts.splitlines():
@@ -29,12 +29,12 @@ def cleantext(path, lang="english", savepath):
 
 def word2vec(corpus, size, sg, iterations, path):
     model = gensim.models.Word2Vec(
-        corpus, size=size sg=sg,
+        corpus, size=size, sg=sg,
         iter=iterations,  min_count=1
         )
         
     try:
-        model.save_word2vec_format(path)
+        model.wv.save_word2vec_format(path)
     except expression as identifier:
         print("error on save trained model")
     
