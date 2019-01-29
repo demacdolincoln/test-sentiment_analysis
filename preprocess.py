@@ -27,7 +27,7 @@ def cleantext(path, lang="english"):
 
     return corpus, target, stopw
 
-def word2vec(corpus, size, sg, iterations, path):
+def save_word2vec(corpus, size, sg, iterations, path):
     model = gensim.models.Word2Vec(
         corpus, size=size, sg=sg,
         iter=iterations,  min_count=1
@@ -37,5 +37,3 @@ def word2vec(corpus, size, sg, iterations, path):
         model.wv.save_word2vec_format(path)
     except expression as identifier:
         print("error on save trained model")
-    
-    return model
