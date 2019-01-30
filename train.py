@@ -1,5 +1,6 @@
+import torch
 from torch import nn, optim
-
+import numpy as np
 from ignite.engine import Events, create_supervised_trainer, create_supervised_evaluator
 from ignite.metrics import Accuracy
 from time import time
@@ -21,8 +22,8 @@ def train(model, model_vec, data_train, data_test, config, model_name):
         model,
         metrics={
             "accuracy": Accuracy()
-        },
-        non_bloking=True
+        }  # ,
+        # non_bloking=True
     )
 
     @trainer.on(Events.STARTED)
@@ -33,7 +34,7 @@ def train(model, model_vec, data_train, data_test, config, model_name):
         trainer._accuracy_train = []
         trainer._accuracy_test = []
         trainer._init_time = time()
-        traier._csv_path = config["log_path"]
+        trainer._csv_path = config["log_path"]
 
         if not Path(trainer._csv_path):
             with open(trainer._csv_path, "x") as f:
@@ -84,10 +85,11 @@ def train(model, model_vec, data_train, data_test, config, model_name):
     @trainer.on(Events.COMPLETED)
     def summary(trainer):
         print("-"*80)
+        print(f"model: {model_name}")
         print(f"epochs: {trainer.state.epoch}")
-        print(f"total time: {timedelta(time() - trainer._init_time)}")
+        print(f"total time: {timedelta(seconds=(time() - trainer._init_time))}")
 
-        out=NiceTable(["--", "loss", "train", "test"])
+        out = NiceTable(["--", "loss", "train", "test"])
         out.append(["init",
                     f"{trainer._loss[0]:.3f}",
                     f"{trainer._accuracy_train[0]:.3f}",
@@ -98,7 +100,7 @@ def train(model, model_vec, data_train, data_test, config, model_name):
                     f"{trainer._accuracy_test[-1]:.3f}"])
         print(out)
 
-        torch.save(rnn, f"saved_models/{model_name}")
+        torch.save(model, f"saved_models/{model_name}")
 
     trainer.run(data_train, max_epochs=config["epochs"])
     return trainer
