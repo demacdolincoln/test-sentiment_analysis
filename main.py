@@ -43,10 +43,23 @@ models = {
 train_data, test_data, train_target, test_target = train_test_split(
     corpus, target, test_size=0.25)
 
-data_train = Data(train_data, train_target, skip_gram, word2id, stopw)
-data_test = Data(test_data, test_target, skip_gram, word2id, stopw)
+rnn_train = Data(train_data, train_target, model_10,
+                 max_sentence, 10, stopw, word2id, "rnn")
+rnn_test = Data(test_data, test_target, model_10,
+                 max_sentence, 10, stopw, word2id, "rnn")
+print(rnn_train[4][0].shape)
+print(rnn_test[4][0].shape)
 
-b = Data(corpus, target, model_10, max_sentence, 10, stopw, word2id, "rnn")
-print(b[4][0].shape)
-b = Data(corpus, target, model_44, max_sentence, 44, stopw, word2id, "2d")
-print(b[4][0].shape)
+conv1d_train = Data(train_data, train_target, model_10,
+                 max_sentence, 10, stopw, word2id, "1d")
+conv1d_test = Data(test_data, test_target, model_10,
+                max_sentence, 10, stopw, word2id, "1d")
+print(conv1d_train[4][0].shape)
+print(conv1d_test[4][0].shape)
+
+conv2d_train = Data(train_data, train_target, model_44,
+                 max_sentence, max_sentence, stopw, word2id, "2d")
+conv2d_test = Data(test_data, test_target, model_44,
+                max_sentence, max_sentence, stopw, word2id, "2d")
+print(conv2d_train[4][0].shape)
+print(conv2d_test[4][0].shape)
