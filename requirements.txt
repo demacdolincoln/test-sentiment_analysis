@@ -1,0 +1,9 @@
+nltk==3.4
+pytorch_ignite==0.1.2
+nicetable==0.6.0
+numpy==1.16.0
+gensim==3.6.0
+bokeh==0.13.0
+torch==1.0.0a0+db5d313
+ignite==1.1.0
+scikit_learn==0.20.2
