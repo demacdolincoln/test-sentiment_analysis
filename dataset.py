@@ -34,10 +34,6 @@ class Data(Dataset):
         self.m = m
         self.mtype = mtype
         if mtype == "2d":
-            _tmp = []
-            for j, i in enumerate(data):
-                make_matrix(i, model, m, n, stop_words, word2id, "2d")
-                print(j)
             self.data = torch.FloatTensor(
                 [make_matrix(i, model, m, n, stop_words, word2id,"2d") for i in data]
             )
