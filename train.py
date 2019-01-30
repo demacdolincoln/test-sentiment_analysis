@@ -102,3 +102,4 @@ def registry_progress(trainer):
         torch.save(rnn, f"saved_models/{model_name}")
 
     trainer.run(data_train, max_epochs=config["epochs"])
+    return trainer
