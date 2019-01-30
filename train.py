@@ -21,7 +21,7 @@ def train(model, model_vec, data_train, data_test, config, model_name):
         model,
         metrics={
             "accuracy": Accuracy()
-        }
+        },
         non_bloking=True
     )
 
@@ -45,32 +45,32 @@ def train(model, model_vec, data_train, data_test, config, model_name):
         trainer._tmp_loss.append(trainer.state.output)
 
     @trainer.on(Events.EPOCH_COMPLETED)
-def registry_progress(trainer):
-    
-    trainer._last_loss = np.mean(trainer._tmp_loss)
-    trainer._tmp_loss = []
+    def registry_progress(trainer):
 
-    loss = trainer._last_loss
-    trainer._loss.append(
-        loss
-    )
+        trainer._last_loss = np.mean(trainer._tmp_loss)
+        trainer._tmp_loss = []
 
-    evaluator.run(data_train)
-    accuracy_train = evaluator.state.metrics["accuracy"]
-    trainer._accuracy_train.append(
-        accuracy_train
-    )
+        loss = trainer._last_loss
+        trainer._loss.append(
+            loss
+        )
 
-    evaluator.run(data_test)
-    accuracy_test = evaluator.state.metrics["accuracy"]
-    trainer._accuracy_test.append(
-        accuracy_test
-    )
+        evaluator.run(data_train)
+        accuracy_train = evaluator.state.metrics["accuracy"]
+        trainer._accuracy_train.append(
+            accuracy_train
+        )
 
-    with open(trainer._csv_path, "a") as f:
-        f.write(
-            f"{trainer.state.epoch},{loss},{accuracy_train},{accuracy_test},{model_name}\n")
-        f.close()
+        evaluator.run(data_test)
+        accuracy_test = evaluator.state.metrics["accuracy"]
+        trainer._accuracy_test.append(
+            accuracy_test
+        )
+
+        with open(trainer._csv_path, "a") as f:
+            f.write(
+                f"{trainer.state.epoch},{loss},{accuracy_train},{accuracy_test},{model_name}\n")
+            f.close()
 
     @trainer.on(Events.EPOCH_COMPLETED)
     def progress_log(trainer):
@@ -81,14 +81,13 @@ def registry_progress(trainer):
                   f"accuracy: {metrics['accuracy']:.2f} | " +
                   f"loss: {trainer._loss[-1]:.2f}")
 
-
     @trainer.on(Events.COMPLETED)
     def summary(trainer):
         print("-"*80)
-        print(f"epochs: {trainer.state.epoch}"
+        print(f"epochs: {trainer.state.epoch}")
         print(f"total time: {timedelta(time() - trainer._init_time)}")
 
-        out = NiceTable(["--", "loss", "train", "test"])
+        out=NiceTable(["--", "loss", "train", "test"])
         out.append(["init",
                     f"{trainer._loss[0]:.3f}",
                     f"{trainer._accuracy_train[0]:.3f}",
