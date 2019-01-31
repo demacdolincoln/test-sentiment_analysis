@@ -24,8 +24,8 @@ for i in corpus:
 print("max_sentence: ", max_sentence)
 
 models = {
-    "1d": CNN1d(129, 2),
-    "2d": CNN2d(32, 2),
+    "conv_1d": CNN1d(129, 2),
+    "conv_2d": CNN2d(32, 2),
     "lstm": RNN(vocab_size, model_10,
                 CONFIG["rnn"]["m"], CONFIG["rnn"]["n"],
                 2, 16, 2, mode="lstm"),
@@ -66,12 +66,12 @@ conv1d_train = Data(train_data, train_target, model_10,
 conv1d_test = Data(test_data, test_target, model_10,
                    max_sentence, 10, stopw, word2id, "1d")
 
-dloaders["1d_train"] = DataLoader(conv1d_train,
-                                      batch_size=int(conv1d_train._len/3),
+dloaders["conv_1d_train"] = DataLoader(conv1d_train,
+                                       batch_size=int(conv1d_train._len/3),
+                                       shuffle=True)
+dloaders["conv_1d_test"] = DataLoader(conv1d_test,
+                                      batch_size=conv1d_test._len,
                                       shuffle=True)
-dloaders["1d_test"] = DataLoader(conv1d_test,
-                                     batch_size=conv1d_test._len,
-                                     shuffle=True)
 
 # conv2d
 conv2d_train = Data(train_data, train_target, model_44,
@@ -79,12 +79,12 @@ conv2d_train = Data(train_data, train_target, model_44,
 conv2d_test = Data(test_data, test_target, model_44,
                    max_sentence, max_sentence, stopw, word2id, "2d")
 
-dloaders["2d_train"] = DataLoader(conv2d_train,
-                                      batch_size=int(conv2d_train._len/3),
+dloaders["conv_2d_train"] = DataLoader(conv2d_train,
+                                       batch_size=int(conv2d_train._len/3),
+                                       shuffle=True)
+dloaders["conv_2d_test"] = DataLoader(conv2d_test,
+                                      batch_size=conv2d_test._len,
                                       shuffle=True)
-dloaders["2d_test"] = DataLoader(conv2d_test,
-                                     batch_size=conv2d_test._len,
-                                     shuffle=True)
 
 for nn_name in CONFIG.keys():
     vec_model = None
@@ -106,5 +106,3 @@ for nn_name in CONFIG.keys():
         train(models[nn_name], vec_model,
               dloaders[f"{nn_name}_train"], dloaders[f"{nn_name}_test"],
               CONFIG[nn_name], nn_name)
-
-    

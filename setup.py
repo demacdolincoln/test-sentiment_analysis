@@ -1,5 +1,5 @@
 CONFIG = {
-    "2d": {
+    "conv_2d": {
         "m": 44,
         "n": 44,
         "vec_path": f"word2vec/skipgram_44.vec",
@@ -8,7 +8,7 @@ CONFIG = {
         "save_path": "saved_models/conv2d.pth",
         "log_path": "results.csv"
     },
-    "1d": {
+    "conv_1d": {
         "m": 44,
         "n": 10,
         "vec_path": f"word2vec/skipgram_10.vec",
