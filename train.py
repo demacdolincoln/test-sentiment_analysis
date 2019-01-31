@@ -84,7 +84,7 @@ def train(model, model_vec, data_train, data_test, config, model_name):
 
     @trainer.on(Events.COMPLETED)
     def summary(trainer):
-        print("-"*80)
+        print("-"*40)
         print(f"model: {model_name}")
         print(f"epochs: {trainer.state.epoch}")
         print(f"total time: {timedelta(seconds=(time() - trainer._init_time))}")
