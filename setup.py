@@ -21,7 +21,7 @@ CONFIG = {
         "m": 44,
         "n": 10,
         "vec_path": f"word2vec/skipgram_10.vec",
-        "epochs": 100,
+        "epochs": 50,
         "lr": 1e-4,
         "save_path": "saved_models/rnn_{_type}.pth",
         "log_path": "results.csv"
@@ -30,7 +30,7 @@ CONFIG = {
         "m": 44,
         "n": 10,
         "vec_path": f"word2vec/skipgram_10.vec",
-        "epochs": 100,
+        "epochs": 50,
         "lr": 1e-5,
         "save_path": "saved_models/conv1d_rnn.pth",
         "log_path": "results.csv"
@@ -39,7 +39,7 @@ CONFIG = {
         "m": 44,
         "n": 44,
         "vec_path": f"word2vec/skipgram_44.vec",
-        "epochs": 100,
+        "epochs": 50,
         "lr": 1e-5,
         "save_path": "saved_models/conv1d_rnn.pth",
         "log_path": "results.csv"
