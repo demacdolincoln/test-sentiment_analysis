@@ -5,6 +5,7 @@ from setup import CONFIG
 from models import *
 from sklearn.model_selection import train_test_split
 from torch.utils.data import DataLoader
+from train import train
 
 corpus, target, stopw = cleantext("dataset/*labelled.txt")
 
@@ -31,81 +32,79 @@ models = {
     "gru": RNN(vocab_size, model_10,
                CONFIG["rnn"]["m"], CONFIG["rnn"]["n"],
                2, 16, 2, mode="gru"),
-    "conv1drnn": CONV1dRNN(vocab_size, model_10,
-                           CONFIG["conv_1d_rnn"]["m"], CONFIG["conv_1d_rnn"]["n"],
-                           2, 16, 2, mode="gru"),
-    "conv2drnn": CONV2dRNN(vocab_size, model_44,
-                           CONFIG["conv_2d_rnn"]["m"], CONFIG["conv_2d_rnn"]["n"],
-                           2, CONFIG["conv_2d_rnn"]["m"], 2, mode="gru")
+    "conv_1d_rnn": CONV1dRNN(vocab_size, model_10,
+                             CONFIG["conv_1d_rnn"]["m"], CONFIG["conv_1d_rnn"]["n"],
+                             2, 16, 2, mode="gru"),
+    "conv_2d_rnn": CONV2dRNN(vocab_size, model_44,
+                             CONFIG["conv_2d_rnn"]["m"], CONFIG["conv_2d_rnn"]["n"],
+                             2, CONFIG["conv_2d_rnn"]["m"], 2, mode="gru")
 }
 
 # dataset
 
-
-def test_dataloader(dl, rna):
-    ex = next(iter(dl))
-    print(ex[0].shape)
-    out = rna(ex[0])
-    print(out.shape)
-
+dloaders = {}  # data loaders
 
 train_data, test_data, train_target, test_target = train_test_split(
     corpus, target, test_size=0.25)
 
+# rnn
 rnn_train = Data(train_data, train_target, model_10,
                  max_sentence, 10, stopw, word2id, "rnn")
 rnn_test = Data(test_data, test_target, model_10,
                 max_sentence, 10, stopw, word2id, "rnn")
 
-dl_rnn_train = DataLoader(rnn_train, batch_size=1, shuffle=True)
-dl_rnn_test = DataLoader(rnn_test, batch_size=1, shuffle=False)
+dloaders["rnn_train"] = DataLoader(rnn_train,
+                                   batch_size=1,
+                                   shuffle=True)
+dloaders["rnn_test"] = DataLoader(rnn_test,
+                                  batch_size=1,
+                                  shuffle=False)
 
-print("rnn train")
-test_dataloader(dl_rnn_train, models["lstm"])
-print("rnn test")
-test_dataloader(dl_rnn_test, models["gru"])
-
-print("conv1d rnn test")
-test_dataloader(dl_rnn_train, models["conv1drnn"])
-print("conv1d rnn test")
-test_dataloader(dl_rnn_test, models["conv1drnn"])
-
-print("conv2d rnn test")
-test_dataloader(dl_rnn_train, models["conv2drnn"])
-print("conv2d rnn test")
-test_dataloader(dl_rnn_test, models["conv2drnn"])
-
-
+# conv1d
 conv1d_train = Data(train_data, train_target, model_10,
                     max_sentence, 10, stopw, word2id, "1d")
 conv1d_test = Data(test_data, test_target, model_10,
                    max_sentence, 10, stopw, word2id, "1d")
 
-dl_conv1d_train = DataLoader(conv1d_train,
-                             batch_size=int(conv1d_train._len/3),
-                             shuffle=True)
-dl_conv1d_test = DataLoader(conv1d_test,
-                            batch_size=conv1d_test._len,
-                            shuffle=True)
+dloaders["1d_train"] = DataLoader(conv1d_train,
+                                      batch_size=int(conv1d_train._len/3),
+                                      shuffle=True)
+dloaders["1d_test"] = DataLoader(conv1d_test,
+                                     batch_size=conv1d_test._len,
+                                     shuffle=True)
 
-print("conv1d train")
-test_dataloader(dl_conv1d_train, models["1d"])
-print("conv1d test")
-test_dataloader(dl_conv1d_test, models["1d"])
-
+# conv2d
 conv2d_train = Data(train_data, train_target, model_44,
                     max_sentence, max_sentence, stopw, word2id, "2d")
 conv2d_test = Data(test_data, test_target, model_44,
                    max_sentence, max_sentence, stopw, word2id, "2d")
 
-dl_conv2d_train = DataLoader(conv2d_train,
-                             batch_size=int(conv2d_train._len/3),
-                             shuffle=True)
-dl_conv2d_test = DataLoader(conv2d_test,
-                            batch_size=conv2d_test._len,
-                            shuffle=True)
+dloaders["2d_train"] = DataLoader(conv2d_train,
+                                      batch_size=int(conv2d_train._len/3),
+                                      shuffle=True)
+dloaders["2d_test"] = DataLoader(conv2d_test,
+                                     batch_size=conv2d_test._len,
+                                     shuffle=True)
 
-print("conv2d train")
-test_dataloader(dl_conv2d_train, models["2d"])
-print("conv2d test")
-test_dataloader(dl_conv2d_test, models["2d"])
+for nn_name in CONFIG.keys():
+    vec_model = None
+    if CONFIG[nn_name]["n"] == 10:
+        vec_model = model_10
+    else:
+        vec_model = model_44
+
+    if nn_name == "rnn":
+        for rnn_type in ["gru", "lstm"]:
+            train(models[rnn_type], vec_model,
+                  dloaders["rnn_train"], dloaders["rnn_test"],
+                  CONFIG[nn_name], f"rnn_{rnn_type}")
+    elif "rnn" in nn_name:
+        train(models[nn_name], vec_model,
+              dloaders["rnn_train"], dloaders["rnn_test"],
+              CONFIG[nn_name], nn_name)
+    else:
+        train(models[nn_name], vec_model,
+              dloaders[f"{nn_name}_train"], dloaders[f"{nn_name}_test"],
+              CONFIG[nn_name], nn_name)
+
+    
