@@ -100,7 +100,7 @@ def train(model, model_vec, data_train, data_test, config, model_name):
                     f"{trainer._accuracy_test[-1]:.3f}"])
         print(out)
 
-        torch.save(model, f"saved_models/{model_name}")
+        torch.save(model, f"saved_models/{model_name}.pth")
 
     trainer.run(data_train, max_epochs=config["epochs"])
     return trainer
